@@ -10,17 +10,17 @@ import os
 #  bottom | left | middle | right | top
 #  May be: HORZ_GENERAL, HORZ_LEFT, HORZ_CENTER, HORZ_RIGHT, HORZ_FILLED, HORZ_JUSTIFIED, HORZ_CENTER_ACROSS_SEL, HORZ_DISTRIBUTED
 horz_alignment = {
-    'bottom' : xlwt.Alignment.VERT_BOTTOM,
-    'center' : xlwt.Alignment.HORZ_CENTER,
-    'left' : xlwt.Alignment.HORZ_LEFT,
-    'right' : xlwt.Alignment.HORZ_RIGHT,
+    'bottom': xlwt.Alignment.VERT_BOTTOM,
+    'center': xlwt.Alignment.HORZ_CENTER,
+    'left': xlwt.Alignment.HORZ_LEFT,
+    'right': xlwt.Alignment.HORZ_RIGHT,
 }
 # <td valign="top | middle | bottom | baseline">
 # May be: VERT_TOP, VERT_CENTER, VERT_BOTTOM, VERT_JUSTIFIED, VERT_DISTRIBUTED
 vert_alignment = {
-    'bottom' : xlwt.Alignment.VERT_BOTTOM,
-    'center' : xlwt.Alignment.VERT_CENTER,
-    'top' : xlwt.Alignment.VERT_TOP,
+    'bottom': xlwt.Alignment.VERT_BOTTOM,
+    'center': xlwt.Alignment.VERT_CENTER,
+    'top': xlwt.Alignment.VERT_TOP,
 }
 
 class Html2exc(object):
@@ -81,7 +81,6 @@ class Html2exc(object):
                     for j in range(0, colspan+1, 1):
                         self.list.append((row_i+i, col_i+j))
                 #start_row = row_i
-
 
     def save_wb(self, name):
         self.workbook.save(name)
