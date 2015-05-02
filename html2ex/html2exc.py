@@ -119,5 +119,5 @@ if __name__ == '__main__':
     converter = Html2Excel()
     converter.create_new_sheet('1')
     last_row, last_col = converter.append_html_table('1.html', 0, 1)
-    #converter.append_html_table('2.html', last_row + 2, 1)
+    converter.append_html_table('2.html', last_row + 2, 1)
     converter.save_wb(xls_filename)
