@@ -89,7 +89,7 @@ class Html2Excel(object):
 
                 pattern = xlwt.Pattern()
                 pattern.pattern = xlwt.Pattern.SOLID_PATTERN
-                pattern.pattern_fore_colour = _BG_COLOR.get(row.get('bgcolor', col.get('bgcolor')), 1)
+                pattern.pattern_fore_colour = _BG_COLOR.get(str(row.get('bgcolor', col.get('bgcolor'))).lower(), 1)
  
                 style = xlwt.XFStyle()
                 style.alignment = alignment
