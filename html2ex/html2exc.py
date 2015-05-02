@@ -61,9 +61,6 @@ class Html2Excel(object):
         col_i = start_col
  
         for row_i, row in enumerate(html_string.xpath('//tr|//th'), start=start_row):
-
-
-
             for col_i, col in enumerate(row.xpath('./td'), start=start_col):
                 colspan = int(col.get('colspan', 0))
                 rowspan = int(col.get('rowspan', 0))
