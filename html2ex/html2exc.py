@@ -50,7 +50,7 @@ _BORDER_STYLE = {
     '3': xlwt.Borders.THICK,
 }
 
-_TEXT_SIZES = {
+_TEXT_SIZE = {
     './h1': 640,  # 32px * 20
     './h2': 480,
     './h3': 360,
@@ -118,12 +118,12 @@ class Html2Excel(object):
                     if col.xpath('./b'):
                         font.bold = True
 
-                    for font_size in _TEXT_SIZES.keys():
+                    for font_size in _TEXT_SIZE.keys():
                         if col.xpath(font_size):
                             font.bold = True
-                            font.height = _TEXT_SIZES.get(font_size)
+                            font.height = _TEXT_SIZE.get(font_size)
                             self.worksheet.row(row_i).height_mismatch = True
-                            self.worksheet.row(row_i).height = _TEXT_SIZES.get(font_size) + 50
+                            self.worksheet.row(row_i).height = _TEXT_SIZE.get(font_size) + 50
 
                     style = xlwt.XFStyle()
                     style.font = font
