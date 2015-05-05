@@ -41,6 +41,14 @@ _BG_COLOR = {
     '#008000': 17,  # dark green
     '#0000a0': 18,  # dark blue
 }
+# May be: NO_LINE, THIN, MEDIUM, DASHED, DOTTED, THICK, DOUBLE, HAIR, MEDIUM_DASHED, THIN_DASH_DOTTED,
+# MEDIUM_DASH_DOTTED, THIN_DASH_DOT_DOTTED, MEDIUM_DASH_DOT_DOTTED, SLANTED_MEDIUM_DASH_DOTTED
+_BORDER_STYLE = {
+    '0': xlwt.Borders.NO_LINE,
+    '1': xlwt.Borders.THIN,
+    '2': xlwt.Borders.MEDIUM,
+    '3': xlwt.Borders.THICK,
+}
 
 BORDER_COLOR = 0x40
  
@@ -62,11 +70,12 @@ class Html2Excel(object):
 
     def append_html_table(self, html_file, start_row=0, start_col=0):
         html_string = lxml.html.parse(html_file)
- 
-        row_i = start_row
-        col_i = start_col
 
         for table_el in html_string.xpath('//table'):
+
+            row_i = start_row
+            col_i = start_col
+
             for row_i, row in enumerate(table_el.xpath('./tr'), start=start_row):
                 for col_i, col in enumerate(row.xpath('./td|./th'), start=start_col):
                     colspan = int(col.get('colspan', 0))
@@ -82,13 +91,10 @@ class Html2Excel(object):
                     alignment.vert = _VERT_ALIGNMENT.get(row.get('valign', col.get('valign')), xlwt.Alignment.VERT_TOP)
 
                     borders = xlwt.Borders()
-                    borders.left = xlwt.Borders.DASHED
-                    # May be: NO_LINE, THIN, MEDIUM, DASHED, DOTTED, THICK, DOUBLE, HAIR, MEDIUM_DASHED, THIN_DASH_DOTTED,
-                    # + MEDIUM_DASH_DOTTED, THIN_DASH_DOT_DOTTED, MEDIUM_DASH_DOT_DOTTED, SLANTED_MEDIUM_DASH_DOTTED, or
-                    # 0x00 through 0x0D.
-                    borders.right = xlwt.Borders.MEDIUM
-                    borders.top = xlwt.Borders.MEDIUM
-                    borders.bottom = xlwt.Borders.MEDIUM
+                    borders.left = _BORDER_STYLE.get(table_el.get('border', xlwt.Borders.DASHED))
+                    borders.right = _BORDER_STYLE.get(table_el.get('border', xlwt.Borders.MEDIUM))
+                    borders.top = _BORDER_STYLE.get(table_el.get('border', xlwt.Borders.MEDIUM))
+                    borders.bottom = _BORDER_STYLE.get(table_el.get('border', xlwt.Borders.MEDIUM))
                     borders.left_colour = BORDER_COLOR
                     borders.right_colour = BORDER_COLOR
                     borders.top_colour = BORDER_COLOR
@@ -110,7 +116,7 @@ class Html2Excel(object):
 
                     self.worksheet.write_merge(row_i, row_i+rowspan, col_i, col_i+colspan, col_data, style)
                     self.list.extend((row_i+i, col_i+j) for i in range(0, rowspan+1, 1) for j in range(0, colspan+1, 1))
-
+            start_row = row_i + 1
         return row_i, col_i
  
     def save_wb(self, name):
