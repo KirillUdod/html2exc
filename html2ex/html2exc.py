@@ -77,6 +77,11 @@ class Html2Excel(object):
     def create_new_sheet(self, name_sheet):
         self.worksheet = self.workbook.add_sheet(name_sheet, cell_overwrite_ok=False)
 
+    def set_col_width(self, rows_width):
+        for col_i in rows_width.keys():
+            self.worksheet.col(col_i).width = int(rows_width.get(col_i)) * 20
+
+
     def append_html_table(self, html_file, start_row=0, start_col=0):
         html_string = lxml.html.parse(html_file)
 
@@ -122,7 +127,7 @@ class Html2Excel(object):
                         if col.xpath(font_size):
                             font.bold = True
                             font.height = _TEXT_SIZE.get(font_size)
-                            self.worksheet.row(row_i).height_mismatch = True
+                            self.worksheet.row(row_i).height_mismatch = False
                             self.worksheet.row(row_i).height = _TEXT_SIZE.get(font_size) + 50
 
                     style = xlwt.XFStyle()
@@ -131,7 +136,7 @@ class Html2Excel(object):
                     style.borders = borders
                     style.pattern = pattern
 
-                    col_data = col.text_content()
+                    col_data = col.text_content().encode("utf-8")
 
                     while (row_i, col_i) in self.list:
                         col_i += 1
@@ -151,7 +156,7 @@ if __name__ == '__main__':
     # html_filename = sys.argv[1]
     html_filename = '1.html'
     # xls_filename = sys.argv[2] if len(sys.argv) > 2 else (html_filename + ".xls")
-    xls_filename = 'ddd.xls'
+    xls_filename = '2.xls'
  
     # converter = Html2Excel()
     # converter.create_new_sheet('1')
@@ -159,7 +164,14 @@ if __name__ == '__main__':
     # converter.append_html_table('2.html', last_row + 2, 1)
     # converter.save_wb(xls_filename)
 
+    rows_width = {
+    1: 220,
+    3: 300,
+    9: 800,
+    }
+
     converter = Html2Excel()
     converter.use_existing_wb(xls_filename)
+    converter.set_col_width(rows_width)
     converter.append_html_table('1.html', 3, 1)
     converter.save_wb(xls_filename)
