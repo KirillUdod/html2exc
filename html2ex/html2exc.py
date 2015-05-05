@@ -77,10 +77,9 @@ class Html2Excel(object):
     def create_new_sheet(self, name_sheet):
         self.worksheet = self.workbook.add_sheet(name_sheet, cell_overwrite_ok=False)
 
-    def set_col_width(self, rows_width):
-        for col_i in rows_width.keys():
-            self.worksheet.col(col_i).width = int(rows_width.get(col_i)) * 20
-
+    def set_col_width(self, cols_width):
+        for col_i in cols_width.keys():
+            self.worksheet.col(col_i).width = int(cols_width.get(col_i)) * 20
 
     def append_html_table(self, html_file, start_row=0, start_col=0):
         html_string = lxml.html.parse(html_file)
@@ -103,7 +102,7 @@ class Html2Excel(object):
                     alignment = xlwt.Alignment()
                     alignment.horz = _HORZ_ALIGNMENT.get(row.get('align', col.get('align')), xlwt.Alignment.HORZ_GENERAL)
                     alignment.vert = _VERT_ALIGNMENT.get(row.get('valign', col.get('valign')), xlwt.Alignment.VERT_TOP)
-                    alignment.wrap = xlwt.Alignment.WRAP_AT_RIGHT
+
 
                     borders = xlwt.Borders()
                     borders.left = _BORDER_STYLE.get(table_el.get('border', xlwt.Borders.DASHED))
@@ -131,10 +130,12 @@ class Html2Excel(object):
                             self.worksheet.row(row_i).height = _TEXT_SIZE.get(font_size) + 50
 
                     style = xlwt.XFStyle()
+
                     style.font = font
                     style.alignment = alignment
                     style.borders = borders
                     style.pattern = pattern
+                    style.alignment.wrap = 1
 
                     col_data = col.text_content().encode("utf-8")
 
@@ -164,14 +165,13 @@ if __name__ == '__main__':
     # converter.append_html_table('2.html', last_row + 2, 1)
     # converter.save_wb(xls_filename)
 
-    rows_width = {
+    cols_width = {
     1: 220,
     3: 300,
-    9: 800,
     }
 
     converter = Html2Excel()
     converter.use_existing_wb(xls_filename)
-    converter.set_col_width(rows_width)
+    converter.set_col_width(cols_width)
     converter.append_html_table('1.html', 3, 1)
     converter.save_wb(xls_filename)
