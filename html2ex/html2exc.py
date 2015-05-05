@@ -50,9 +50,18 @@ _BORDER_STYLE = {
     '3': xlwt.Borders.THICK,
 }
 
+_TEXT_SIZES = {
+    './h1': 640,  # 32px * 20
+    './h2': 480,
+    './h3': 360,
+    './h4': 320,
+    './h5': 280,
+    './h6': 220,
+}
+
 BORDER_COLOR = 0x40
  
- 
+
 class Html2Excel(object):
     def __init__(self):
         self.list = []
@@ -89,6 +98,7 @@ class Html2Excel(object):
                     alignment = xlwt.Alignment()
                     alignment.horz = _HORZ_ALIGNMENT.get(row.get('align', col.get('align')), xlwt.Alignment.HORZ_GENERAL)
                     alignment.vert = _VERT_ALIGNMENT.get(row.get('valign', col.get('valign')), xlwt.Alignment.VERT_TOP)
+                    alignment.wrap = xlwt.Alignment.WRAP_AT_RIGHT
 
                     borders = xlwt.Borders()
                     borders.left = _BORDER_STYLE.get(table_el.get('border', xlwt.Borders.DASHED))
@@ -104,7 +114,19 @@ class Html2Excel(object):
                     pattern.pattern = xlwt.Pattern.SOLID_PATTERN
                     pattern.pattern_fore_colour = _BG_COLOR.get(str(row.get('bgcolor', col.get('bgcolor'))).lower(), 1)
 
+                    font = xlwt.Font()
+                    if col.xpath('./b'):
+                        font.bold = True
+
+                    for font_size in _TEXT_SIZES.keys():
+                        if col.xpath(font_size):
+                            font.bold = True
+                            font.height = _TEXT_SIZES.get(font_size)
+                            self.worksheet.row(row_i).height_mismatch = True
+                            self.worksheet.row(row_i).height = _TEXT_SIZES.get(font_size) + 50
+
                     style = xlwt.XFStyle()
+                    style.font = font
                     style.alignment = alignment
                     style.borders = borders
                     style.pattern = pattern
@@ -129,7 +151,7 @@ if __name__ == '__main__':
     # html_filename = sys.argv[1]
     html_filename = '1.html'
     # xls_filename = sys.argv[2] if len(sys.argv) > 2 else (html_filename + ".xls")
-    xls_filename = '2.xls'
+    xls_filename = 'ddd.xls'
  
     # converter = Html2Excel()
     # converter.create_new_sheet('1')
