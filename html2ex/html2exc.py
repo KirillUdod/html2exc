@@ -116,7 +116,9 @@ class Html2Excel(object):
 
                     self.worksheet.write_merge(row_i, row_i+rowspan, col_i, col_i+colspan, col_data, style)
                     self.list.extend((row_i+i, col_i+j) for i in range(0, rowspan+1, 1) for j in range(0, colspan+1, 1))
+
             start_row = row_i + 1
+
         return row_i, col_i
  
     def save_wb(self, name):
