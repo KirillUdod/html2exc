@@ -1,6 +1,8 @@
 from openpyxl.styles import Alignment, Font, Border, Side, PatternFill
 from openpyxl.workbook import Workbook
+from openpyxl import load_workbook
 from lxml.html import document_fromstring, HTMLParser
+from xlutils.copy import copy
 
 # Value must be one of set(['hair', 'medium', 'dashDot', 'dotted', 'mediumDashDot', 'dashed',
 # 'mediumDashed', 'mediumDashDotDot', 'dashDotDot', 'slantDashDot', 'double', None, 'thick', 'thin'])
@@ -12,16 +14,18 @@ _BORDER_STYLE = {
 }
 
 _TEXT_SIZE = {
-    './h1': 32,
-    './h2': 24,
-    './h3': 18,
-    './h4': 16,
-    './h5': 14,
-    './h6': 11,
+    'h1': 32,
+    'h2': 24,
+    'h3': 18,
+    'h4': 16,
+    'h5': 14,
+    'h6': 11,
 }
 
 BORDER_COLOR = '000000'
 WHITE_COLOR = '#FFFFFF'
+TH_COLOR = '00FFFF'
+BLACK_COLOR = '#000000'
 
 
 class Html2Excel(object):
@@ -29,14 +33,12 @@ class Html2Excel(object):
         self.list = []
         self.start_row = 0
         self.start_col = 0
-        self.worksheet = None
         self.workbook = Workbook(encoding='utf8')
-        self.worksheet = self.workbook .active
+        self.worksheet = self.workbook.active
 
     def use_existing_wb(self, name_workbook):
-        # TODO
-        self.workbook = copy(open_workbook(name_workbook, formatting_info=True, encoding_override='utf8'))
-        self.worksheet = self.workbook.get_sheet(0)
+        self.workbook = load_workbook(filename=name_workbook)
+        self.worksheet = self.workbook.get_active_sheet()
 
     def create_new_sheet(self, name_sheet):
         # TODO
@@ -59,22 +61,18 @@ class Html2Excel(object):
                     colspan = int(col.get('colspan', 0))
                     rowspan = int(col.get('rowspan', 0))
 
+                    font_bold = False
+                    font_size = 11
+                    font_color = BLACK_COLOR
+
                     if rowspan:
                         rowspan -= 1
                     if colspan:
                         colspan -= 1
-                    #
-                    # pattern = xlwt.Pattern()
-                    # pattern.pattern = xlwt.Pattern.SOLID_PATTERN
-                    # pattern.pattern_fore_colour = _BG_COLOR.get(str(row.get('bgcolor', col.get('bgcolor'))).lower(), 1)
-                    #
-                    # style = xlwt.XFStyle()
-                    #
-                    # style.font = font
-                    # style.alignment = alignment
-                    # style.borders = borders
-                    # style.pattern = pattern
-                    # style.alignment.wrap = 1
+
+                    if rowspan or colspan:
+                        self.worksheet.merge_cells(start_row=row_i, end_row=row_i+rowspan, start_column=col_i,
+                                                   end_column=col_i+colspan)
 
                     col_data = col.text_content().encode("utf8")
 
@@ -98,6 +96,15 @@ class Html2Excel(object):
                                  color=BORDER_COLOR),
                         bottom=Side(border_style=_BORDER_STYLE.get(table_el.get('border') or None),
                                     color=BORDER_COLOR),
+                        diagonal=Side(border_style=_BORDER_STYLE.get(table_el.get('border') or None),
+                                      color=BORDER_COLOR),
+                        diagonal_direction=0,
+                        outline=Side(border_style=_BORDER_STYLE.get(table_el.get('border') or None),
+                                     color=BORDER_COLOR),
+                        vertical=Side(border_style=_BORDER_STYLE.get(table_el.get('border') or None),
+                                      color=BORDER_COLOR),
+                        horizontal=Side(border_style=_BORDER_STYLE.get(table_el.get('border') or None),
+                                        color=BORDER_COLOR)
                     )
 
                     cell.fill = PatternFill(
@@ -106,26 +113,30 @@ class Html2Excel(object):
                         end_color=str(row.get('bgcolor', col.get('bgcolor', WHITE_COLOR)))[1:]
                     )
 
-                    if col.xpath('./b'):
+                    for el in col.iter():
+                        if el.tag == 'font':
+                            font_color = el.get('color')
+                        elif el.tag == 'b':
+                            font_bold = True
+                        elif el.tag in _TEXT_SIZE:
+                            font_bold = True,
+                            font_size = _TEXT_SIZE.get(el)
+
+                    cell.font = Font(
+                        color=str(font_color)[1:],
+                        bold=font_bold,
+                        size=font_size,
+                    )
+
+                    if col.tag == 'th':
                         cell.font = Font(
                             bold=True
                         )
-
-                    for col_font in col.xpath('./font'):
-                        cell.font = Font(
-                            color=str(col_font.get('color'))[1:]
+                        cell.fill = PatternFill(
+                            fill_type='solid',
+                            start_color=TH_COLOR,
+                            end_color=TH_COLOR
                         )
-
-                    for font_size in _TEXT_SIZE.keys():
-                        if col.xpath(font_size):
-                            cell.font = Font(
-                                bold=True,
-                                size=_TEXT_SIZE.get(font_size)
-                            )
-
-                    if rowspan or colspan:
-                        self.worksheet.merge_cells(start_row=row_i, end_row=row_i+rowspan, start_column=col_i,
-                                                   end_column=col_i+colspan)
 
                     self.list.extend((row_i+i, col_i+j) for i in range(0, rowspan+1, 1) for j in range(0, colspan+1, 1))
 
@@ -141,7 +152,7 @@ if __name__ == '__main__':
     # html_filename = sys.argv[1]
     html_filename = '1.html'
     # xls_filename = sys.argv[2] if len(sys.argv) > 2 else (html_filename + ".xls")
-    xls_filename = '1.xls'
+    xls_filename = '1.xlsx'
 
     # converter = Html2Excel()
     # converter.create_new_sheet('1')
@@ -152,8 +163,8 @@ if __name__ == '__main__':
     cols_width = {1: 220, 3: 300}
 
     converter = Html2Excel()
-    # converter.use_existing_wb(xls_filename)
+    converter.use_existing_wb(xls_filename)
     # converter.set_col_width(cols_width)
     # converter.create_new_sheet('1')
-    converter.append_html_table('1.html', 3, 2)
+    converter.append_html_table('1.html', 9, 2)
     converter.save_wb(xls_filename)
