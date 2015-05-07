@@ -1,6 +1,6 @@
 from openpyxl.styles import Alignment, Font, Border, Side, PatternFill
 from openpyxl.workbook import Workbook
-from openpyxl import load_workbook
+from openpyxl import load_workbook, drawing
 from lxml.html import document_fromstring, HTMLParser
 
 # Value must be one of set(['hair', 'medium', 'dashDot', 'dotted', 'mediumDashDot', 'dashed',
@@ -57,6 +57,10 @@ class Html2Excel(object):
                 row_i = start_row
                 col_i = start_col
 
+                img = drawing.Image('test.jpg')
+                img.anchor(self.worksheet.cell('D3'))
+                self.worksheet.add_image(img)
+
                 for row_i, row in enumerate(table_body.xpath('./tr'), start=start_row):
                     for col_i, col in enumerate(row.xpath('./td|./th'), start=start_col):
                         colspan = int(col.get('colspan', 0))
@@ -79,7 +83,7 @@ class Html2Excel(object):
                         cell = self.worksheet.cell(row=row_i, column=col_i)
                         if rowspan or colspan:
                             self.worksheet.merge_cells(start_row=row_i, end_row=row_i+rowspan, start_column=col_i,
-                                                              end_column=col_i+colspan)
+                                                       end_column=col_i+colspan)
                         cell.value = col_data
                         cell.alignment = Alignment(
                             horizontal=row.get('align', col.get('align')) or 'left',
@@ -120,7 +124,6 @@ class Html2Excel(object):
 
                         for i in range(0, rowspan+1, 1):
                             for j in range(0, colspan+1, 1):
-                                print('zzz')
                                 self.list.append((row_i+i, col_i+j))
                                 cell = self.worksheet.cell(row=row_i+i, column=col_i+j)
                                 cell.border = Border(
@@ -146,7 +149,7 @@ if __name__ == '__main__':
     # html_filename = sys.argv[1]
     html_filename = '11.html'
     # xls_filename = sys.argv[2] if len(sys.argv) > 2 else (html_filename + ".xls")
-    xls_filename = '11.xlsx'
+    xls_filename = '33.xlsx'
 
     # converter = Html2Excel()
     # converter.create_new_sheet('1')
@@ -159,5 +162,5 @@ if __name__ == '__main__':
     converter.use_existing_wb(xls_filename)
     # converter.set_col_width(cols_width)
     # converter.create_new_sheet('1')
-    converter.append_html_table('13.html', 3, 2)
+    converter.append_html_table('13.html', 8, 2)
     converter.save_wb(xls_filename)
