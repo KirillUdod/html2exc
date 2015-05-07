@@ -2,7 +2,6 @@ from openpyxl.styles import Alignment, Font, Border, Side, PatternFill
 from openpyxl.workbook import Workbook
 from openpyxl import load_workbook
 from lxml.html import document_fromstring, HTMLParser
-from xlutils.copy import copy
 
 # Value must be one of set(['hair', 'medium', 'dashDot', 'dotted', 'mediumDashDot', 'dashed',
 # 'mediumDashed', 'mediumDashDotDot', 'dashDotDot', 'slantDashDot', 'double', None, 'thick', 'thin'])
@@ -53,94 +52,89 @@ class Html2Excel(object):
         html_string = document_fromstring(open(html_file, 'rb').read(), HTMLParser(encoding='utf8'))
 
         for table_el in html_string.xpath('//table'):
-            row_i = start_row
-            col_i = start_col
+            for table_body in table_el.xpath('./tbody'):
 
-            for row_i, row in enumerate(table_el.xpath('./tr'), start=start_row):
-                for col_i, col in enumerate(row.xpath('./td|./th'), start=start_col):
-                    colspan = int(col.get('colspan', 0))
-                    rowspan = int(col.get('rowspan', 0))
+                row_i = start_row
+                col_i = start_col
 
-                    font_bold = False
-                    font_size = 11
-                    font_color = BLACK_COLOR
+                for row_i, row in enumerate(table_body.xpath('./tr'), start=start_row):
+                    for col_i, col in enumerate(row.xpath('./td|./th'), start=start_col):
+                        colspan = int(col.get('colspan', 0))
+                        rowspan = int(col.get('rowspan', 0))
 
-                    if rowspan:
-                        rowspan -= 1
-                    if colspan:
-                        colspan -= 1
+                        font_bold = False
+                        font_size = 11
+                        font_color = BLACK_COLOR
 
-                    if rowspan or colspan:
-                        self.worksheet.merge_cells(start_row=row_i, end_row=row_i+rowspan, start_column=col_i,
-                                                   end_column=col_i+colspan)
+                        if rowspan:
+                            rowspan -= 1
+                        if colspan:
+                            colspan -= 1
 
-                    col_data = col.text_content().encode("utf8")
+                        col_data = col.text_content().encode("utf8")
 
-                    while (row_i, col_i) in self.list:
-                        col_i += 1
+                        while (row_i, col_i) in self.list:
+                            col_i += 1
 
-                    cell = self.worksheet.cell(row=row_i, column=col_i)
-                    cell.value = col_data
-                    cell.alignment = Alignment(
-                        horizontal=row.get('align', col.get('align')) or 'left',
-                        vertical=row.get('valign', col.get('valign')) or 'top',
-                        shrink_to_fit=True, wrap_text=True
-                    )
-
-                    cell.border = Border(
-                        left=Side(border_style=_BORDER_STYLE.get(table_el.get('border') or None),
-                                  color=BORDER_COLOR),
-                        right=Side(border_style=_BORDER_STYLE.get(table_el.get('border') or None),
-                                   color=BORDER_COLOR),
-                        top=Side(border_style=_BORDER_STYLE.get(table_el.get('border') or None),
-                                 color=BORDER_COLOR),
-                        bottom=Side(border_style=_BORDER_STYLE.get(table_el.get('border') or None),
-                                    color=BORDER_COLOR),
-                        diagonal=Side(border_style=_BORDER_STYLE.get(table_el.get('border') or None),
-                                      color=BORDER_COLOR),
-                        diagonal_direction=0,
-                        outline=Side(border_style=_BORDER_STYLE.get(table_el.get('border') or None),
-                                     color=BORDER_COLOR),
-                        vertical=Side(border_style=_BORDER_STYLE.get(table_el.get('border') or None),
-                                      color=BORDER_COLOR),
-                        horizontal=Side(border_style=_BORDER_STYLE.get(table_el.get('border') or None),
-                                        color=BORDER_COLOR)
-                    )
-
-                    cell.fill = PatternFill(
-                        fill_type='solid',
-                        start_color=str(row.get('bgcolor', col.get('bgcolor', WHITE_COLOR)))[1:],
-                        end_color=str(row.get('bgcolor', col.get('bgcolor', WHITE_COLOR)))[1:]
-                    )
-
-                    for el in col.iter():
-                        if el.tag == 'font':
-                            font_color = el.get('color')
-                        elif el.tag == 'b':
-                            font_bold = True
-                        elif el.tag in _TEXT_SIZE:
-                            font_bold = True,
-                            font_size = _TEXT_SIZE.get(el)
-
-                    cell.font = Font(
-                        color=str(font_color)[1:],
-                        bold=font_bold,
-                        size=font_size,
-                    )
-
-                    if col.tag == 'th':
-                        cell.font = Font(
-                            bold=True
+                        cell = self.worksheet.cell(row=row_i, column=col_i)
+                        if rowspan or colspan:
+                            self.worksheet.merge_cells(start_row=row_i, end_row=row_i+rowspan, start_column=col_i,
+                                                              end_column=col_i+colspan)
+                        cell.value = col_data
+                        cell.alignment = Alignment(
+                            horizontal=row.get('align', col.get('align')) or 'left',
+                            vertical=row.get('valign', col.get('valign')) or 'top',
+                            shrink_to_fit=True, wrap_text=True
                         )
+
                         cell.fill = PatternFill(
                             fill_type='solid',
-                            start_color=TH_COLOR,
-                            end_color=TH_COLOR
+                            start_color=str(row.get('bgcolor', col.get('bgcolor', WHITE_COLOR)))[1:],
+                            end_color=str(row.get('bgcolor', col.get('bgcolor', WHITE_COLOR)))[1:]
                         )
 
-                    self.list.extend((row_i+i, col_i+j) for i in range(0, rowspan+1, 1) for j in range(0, colspan+1, 1))
+                        for el in col.iter():
+                            if el.tag == 'font':
+                                font_color = el.get('color')
+                            elif el.tag == 'b':
+                                font_bold = True
+                            elif el.tag in _TEXT_SIZE:
+                                font_bold = True,
+                                font_size = _TEXT_SIZE.get(el)
 
-            start_row = row_i + 1
+                        cell.font = Font(
+                            color=str(font_color)[1:],
+                            bold=font_bold,
+                            size=font_size,
+                        )
+
+                        if col.tag == 'th':
+                            cell.font = Font(
+                                bold=True
+                            )
+                            cell.fill = PatternFill(
+                                fill_type='solid',
+                                start_color=TH_COLOR,
+                                end_color=TH_COLOR
+                            )
+
+                        for i in range(0, rowspan+1, 1):
+                            for j in range(0, colspan+1, 1):
+                                print('zzz')
+                                self.list.append((row_i+i, col_i+j))
+                                cell = self.worksheet.cell(row=row_i+i, column=col_i+j)
+                                cell.border = Border(
+                                    left=Side(border_style=_BORDER_STYLE.get(table_el.get('border') or None),
+                                              color=BORDER_COLOR),
+                                    right=Side(border_style=_BORDER_STYLE.get(table_el.get('border') or None),
+                                               color=BORDER_COLOR),
+                                    top=Side(border_style=_BORDER_STYLE.get(table_el.get('border') or None),
+                                             color=BORDER_COLOR),
+                                    bottom=Side(border_style=_BORDER_STYLE.get(table_el.get('border') or None),
+                                                color=BORDER_COLOR),
+                                )
+
+                start_row = row_i + 1
 
         return row_i, col_i
 
@@ -150,9 +144,9 @@ class Html2Excel(object):
 
 if __name__ == '__main__':
     # html_filename = sys.argv[1]
-    html_filename = '1.html'
+    html_filename = '11.html'
     # xls_filename = sys.argv[2] if len(sys.argv) > 2 else (html_filename + ".xls")
-    xls_filename = '1.xlsx'
+    xls_filename = '11.xlsx'
 
     # converter = Html2Excel()
     # converter.create_new_sheet('1')
@@ -160,11 +154,10 @@ if __name__ == '__main__':
     # converter.append_html_table('2.html', last_row + 2, 1)
     # converter.save_wb(xls_filename)
 
-    cols_width = {1: 220, 3: 300}
 
     converter = Html2Excel()
     converter.use_existing_wb(xls_filename)
     # converter.set_col_width(cols_width)
     # converter.create_new_sheet('1')
-    converter.append_html_table('1.html', 9, 2)
+    converter.append_html_table('13.html', 3, 2)
     converter.save_wb(xls_filename)
