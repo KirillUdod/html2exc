@@ -43,25 +43,23 @@ class Html2Excel(object):
         # TODO
         self.worksheet = self.workbook.add_sheet(name_sheet, cell_overwrite_ok=False)
 
-    def set_col_width(self, cols_width):
-        # TODO
-        for col_i in cols_width.keys():
-            self.worksheet.col(col_i).width = int(cols_width.get(col_i)) * 20
-
     def append_html_table(self, html_file, start_row=0, start_col=0):
         html_string = document_fromstring(open(html_file, 'rb').read(), HTMLParser(encoding='utf8'))
+        last_row = 0
+        img = drawing.Image('test.jpg')
+        img.anchor(self.worksheet.cell('C3'))
+        self.worksheet.add_image(img)
 
         for table_el in html_string.xpath('//table'):
             for table_body in table_el.xpath('./tbody'):
 
-                row_i = start_row
+                if last_row:
+                    st_row = last_row + 2
+                else:
+                    st_row = start_row
                 col_i = start_col
 
-                img = drawing.Image('test.jpg')
-                img.anchor(self.worksheet.cell('D3'))
-                self.worksheet.add_image(img)
-
-                for row_i, row in enumerate(table_body.xpath('./tr'), start=start_row):
+                for row_i, row in enumerate(table_body.xpath('./tr'), start=st_row):
                     for col_i, col in enumerate(row.xpath('./td|./th'), start=start_col):
                         colspan = int(col.get('colspan', 0))
                         rowspan = int(col.get('rowspan', 0))
@@ -124,6 +122,8 @@ class Html2Excel(object):
 
                         for i in range(0, rowspan+1, 1):
                             for j in range(0, colspan+1, 1):
+                                if i == rowspan:
+                                    last_row = row_i + i
                                 self.list.append((row_i+i, col_i+j))
                                 cell = self.worksheet.cell(row=row_i+i, column=col_i+j)
                                 cell.border = Border(
@@ -136,9 +136,6 @@ class Html2Excel(object):
                                     bottom=Side(border_style=_BORDER_STYLE.get(table_el.get('border') or None),
                                                 color=BORDER_COLOR),
                                 )
-
-                start_row = row_i + 1
-
         return row_i, col_i
 
     def save_wb(self, name):
@@ -156,7 +153,6 @@ if __name__ == '__main__':
     # last_row, last_col = converter.append_html_table('1.html', 0, 1)
     # converter.append_html_table('2.html', last_row + 2, 1)
     # converter.save_wb(xls_filename)
-
 
     converter = Html2Excel()
     converter.use_existing_wb(xls_filename)
