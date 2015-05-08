@@ -1,5 +1,4 @@
 from openpyxl.cell import get_column_letter
-from lxml.html import document_fromstring, HTMLParser
 from openpyxl.styles import Alignment, Font, Border, Side, PatternFill
 from openpyxl.workbook import Workbook
 from openpyxl import load_workbook, drawing
@@ -47,7 +46,6 @@ class Html2Excel(object):
 
     def set_col_width(self, cols_width):
         for col_i in cols_width.keys():
-            print(get_column_letter(col_i))
             self.worksheet.column_dimensions[get_column_letter(col_i)].width = int(cols_width.get(col_i))
 
     def add_logo(self, logo_filename):
