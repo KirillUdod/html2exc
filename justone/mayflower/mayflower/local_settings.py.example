@@ -1,0 +1,44 @@
+import sys,os
+PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+sys.path.append(PROJECT_ROOT)
+
+DEBUG = True
+TEMPLATE_DEBUG = DEBUG
+
+HOST = 'mayflo.ru'
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'mayflower',
+        'USER': 'mayflower',
+        'PASSWORD': 'may',
+        'HOST': 'localhost',
+        'PORT': '',
+    }
+}
+
+MEDIA_ROOT = PROJECT_ROOT + '/media/'
+MEDIA_URL = '/media/'
+
+STATIC_ROOT = PROJECT_ROOT + '/static/'
+STATIC_URL = '/static/'
+
+STATICFILES_DIRS = (PROJECT_ROOT + '/static_folder', )
+
+TEMPLATE_DIRS = (PROJECT_ROOT + '/templates', )
+
+EMAIL_HOST = 'smtp.yandex.ru'
+EMAIL_PORT = 25
+EMAIL_HOST_USER = 'nikanorovdenis'
+EMAIL_HOST_PASSWORD = 'u4c1h57d'
+DEFAULT_FROM_EMAIL = 'nikanorovdenis@yandex.ru'
+SERVER_EMAIL = DEFAULT_FROM_EMAIL
+EMAIL_SUBJECT_PREFIX = u'[Mayflower] '
+
+ADMINS = (
+    ('Denis Nikanorov', 'nikanorovdenis@yandex.ru'),
+)
+MANAGERS = ADMINS
+
+ALLOWED_HOSTS = ['.%s' % HOST]

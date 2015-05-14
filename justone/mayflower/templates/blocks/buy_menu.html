@@ -1,0 +1,62 @@
+{% comment %}
+<div id="buy_menu">
+    <div class="wr gray">
+        <div class="item no_marg{% ifequal buy_step 1 %} red{% endifequal %}">
+            <div class="number">1</div>
+            <div class="step">Выбор подарка</div>
+        </div>
+
+        <div class="item{% ifequal buy_step 2 %} red{% endifequal %}">
+            <div class="number">2</div>
+            <div class="step">Способ доставки</div>
+        </div>
+
+        <div class="item{% ifequal buy_step 3 %} red{% endifequal %}">
+            <div class="number">3</div>
+            <div class="step">Адресат</div>
+        </div>
+    </div>
+</div>
+{% endcomment %}
+
+<div id="catalog">
+    <div class="title hagin_caps">Каталог</div>
+    <div class="shadow_catalog"></div>
+</div>
+
+<div id="buy_menu">
+    <div class="wr gray">
+        <div class="strelka">
+            <div class="left"></div>
+            <div class="mid">
+                <div class="item no_marg{% ifequal buy_step 1 %} red{% endifequal %}">
+                    <div class="number">1</div>
+                    <div class="step">Выбор подарка</div>
+                </div>
+            </div>
+            <div class="right"></div>
+        </div>
+
+        <div class="strelka">
+            <div class="left"></div>
+            <div class="mid">
+                <div class="item{% ifequal buy_step 2 %} red{% endifequal %}">
+                    <div class="number">2</div>
+                    <div class="step">Способ доставки</div>
+                </div>
+            </div>
+            <div class="right"></div>
+        </div>
+
+        <div class="strelka">
+            <div class="left"></div>
+            <div class="mid">
+                <div class="item{% ifequal buy_step 3 %} red{% endifequal %}">
+                    <div class="number">3</div>
+                    <div class="step">Адресат</div>
+                </div>
+            </div>
+            <div class="right"></div>
+        </div>
+    </div>
+</div>

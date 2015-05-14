@@ -1,0 +1,258 @@
+<div class="country_select" style="margin-bottom:50px;">
+    <div class="where">Куда доставляем?</div>
+    <div class="country_select_cont">
+        <a class="country_but active" href="javascript:return false;">Москва</a>
+        <a class="country_but_mo" href="javascript:return false;">Московская Область</a>
+    </div>
+</div>
+
+<div id="delivery">
+<div class="delivery_row active">
+    <div class="delivery_blocker">
+        {% comment %}
+        <div class="header" rel="7"{% if not order_form.delivery_today %} style="display: none"{% endif %}>
+            <a class="time_block" href="javascript:return false;"> Для заказов "день в день" за 1,5 часа
+                - {{ delivery_types.7.price }}р.</a>
+        </div>
+        {% endcomment %}
+
+        <div class="header" rel="1">
+            <a class="time_block" href="javascript:return false;">{{ delivery_types.1.label }}
+                - {{ delivery_types.1.price }}р.</a>
+        </div>
+
+        <div class="header" rel="2">
+            <a class="time_block" href="javascript:return false;">{{ delivery_types.2.label }}
+                - {{ delivery_types.2.price }}р.</a>
+        </div>
+
+        {% comment %}
+        <div class="header">
+            <a class="time_block 3" href="javascript:return false;">Точная доставка (скрыть) - 550р.</a>
+        </div>
+        {% endcomment %}
+        {% comment %}
+        <div class="header" rel="3">
+            <a class="time_block" href="javascript:return false;">{{ delivery_types.3.label }}
+                - {{ delivery_types.3.price }}р.</a>
+        </div>
+        {% endcomment %}
+        <div class="header{% if for_order and basket.summary < free_delivery_price %} unactive{% endif %}" rel="4">
+            <a class="time_block" href="javascript:return false;">{{ delivery_types.4.label }} - при заказе
+                от {{ free_delivery_price }}р.</a>
+        </div>
+    </div>
+
+    {% comment %}
+    <div class="delivery_block" rel="7">
+        <div class="cont" style="padding: 48.5px 0 0 0;">
+            <table>
+                <tbody>
+                {% for time in delivery_types.7.times %}
+                    <tr>
+                        <td>
+                            <input type="radio" value="{{ forloop.counter0 }}" name="delivery_time_7"
+                                   id="delivery_time_7_{{ forloop.counter0 }}">
+                            <label for="delivery_time_7_{{ forloop.counter0 }}">{{ time }}</label>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% endcomment %}
+
+    <div class="delivery_block" rel="1">
+        <div class="cont" style="padding: 48.5px 0 0 0;">
+            <table>
+                <tbody>
+                <tr>
+                    {% for time in delivery_types.1.times %}
+                        <td{% cycle '' ' class="second"' %}>
+                            <input type="radio" value="{{ forloop.counter0 }}" name="delivery_time_1"
+                                   id="delivery_time_1_{{ forloop.counter0 }}">
+                            <label for="delivery_time_1_{{ forloop.counter0 }}">{{ time }}</label>
+                        </td>
+                        {% cycle '' '</tr><tr>' %}
+                    {% endfor %}
+                    {% if not delivery_types.1.times|length|divisibleby:2 %}</tr>{% endif %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="delivery_block" rel="2">
+        <div class="cont" style="padding: 32px 0 0 0;">
+            <table>
+                <tbody>
+                <tr>
+                    {% for time in delivery_types.2.times %}
+                        <td{% cycle '' ' class="second"' %}>
+                            <input type="radio" value="{{ forloop.counter0 }}" name="delivery_time_2"
+                                   id="delivery_time_2_{{ forloop.counter0 }}">
+                            <label for="delivery_time_2_{{ forloop.counter0 }}">{{ time }}</label>
+                        </td>
+                        {% cycle '' '</tr><tr>' %}
+                    {% endfor %}
+                    {% if not delivery_types.1.times|length|divisibleby:2 %}</tr>{% endif %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% comment %}
+    <div class="delivery_block" rel="3">
+        <div class="cont" style="padding: 72px 0 0 0;">
+            <div class="day_part">Выберите временной интервал</div>
+            <table>
+                <tbody>
+                <tr>
+                    <td>
+                        <div class="one_hour">
+                            <div class="one_hour-inner">
+                                <p class="one_hour-input">
+                                    <label for="delivery_time_3" class="select">
+                                        <select name="delivery_time_3" id="delivery_time_3">
+                                            {% for time in delivery_types.3.times %}
+                                                <option value="{{ forloop.counter0 }}">{{ time }} часов</option>
+                                            {% endfor %}
+                                        </select>
+                                    </label>
+                                </p>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% endcomment %}
+    <div class="delivery_block" rel="4">
+        <div class="cont" style="padding: 33px 0 0 0;">
+            <table>
+                <tbody>
+                {% for time in delivery_types.4.times %}
+                    <tr>
+                        <td>
+                            <input type="radio" value="{{ forloop.counter0 }}" name="delivery_time_4"
+                                   id="delivery_time_4_{{ forloop.counter0 }}">
+                            <label for="delivery_time_4_{{ forloop.counter0 }}">{{ time }}</label>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+
+<div class="delivery_row_mo no">
+
+    <div class="delivery_blocker_mo">
+        <div class="header_mo" rel="5">
+            <a class="time_block" href="javascript:return false;">{{ delivery_types.5.label }}</a>
+        </div>
+
+        {% comment %}
+        <div class="header_mo" rel="6">
+            <a class="time_block" href="javascript:return false;">{{ delivery_types.6.label }}</a>
+        </div>
+        {% endcomment %}
+    </div>
+
+    <div class="delivery_block" rel="5">
+        <div class="cont" style="padding: 2.5px 0 0 0;">
+            <!--<div class="day_part">Укажите время доставки и удаленность от Москвы</div>-->
+            <table>
+                <tbody>
+                <tr>
+                    <td>
+                        <div class="standart_mo_hour">
+                            <div class="standart_mo_hour">
+                                <p class="standart_mo_hour-input">
+                                    <label for="delivery_time_5" class="select">
+                                        <select name="delivery_time_5" id="delivery_time_5">
+                                            {% for time in delivery_types.5.times %}
+                                                <option value="{{ forloop.counter0 }}">{{ time }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </label>
+                                </p>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="second">
+                        <div class="standart_mo_cost">
+                            <div class="standart_mo_cost-inner">
+                                <p class="standart_mo_cost-input">
+                                    <label for="delivery_price_5" class="select">
+                                        <select name="delivery_price_5" class="mo_price" id="delivery_price_5">
+                                            {% for price_info in delivery_types.5.prices %}
+                                                <option value="{{ forloop.counter0 }}">{{ price_info.label }}
+                                                    - {{ price_info.price }}р.
+                                                </option>
+                                            {% endfor %}
+                                        </select>
+                                    </label>
+                                </p>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    {% comment %}
+    <div class="delivery_block" rel="6">
+        <!--<div class="head">Выберите временной интервал</div>-->
+        <div class="cont" style="padding: 14px 0 15px;">
+            <div class="day_part">Укажите время доставки и удаленность от Москвы</div>
+            <table>
+                <tbody>
+                <tr>
+                    <td>
+                        <div class="exact_mo_hour">
+                            <div class="exact_mo_hour">
+                                <p class="exact_mo_hour-input">
+                                    <label for="delivery_time_6" class="select">
+                                        <select name="delivery_time_6" id="delivery_time_6">
+                                            {% for time in delivery_types.6.times %}
+                                                <option value="{{ forloop.counter0 }}">{{ time }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </label>
+                                </p>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="second">
+                        <div class="exact_mo_cost">
+                            <div class="exact_mo_cost-inner">
+                                <p class="exact_mo_cost-input">
+                                    <label for="delivery_price_6" class="select">
+                                        <select name="delivery_price_6" class="mo_price" id="delivery_price_6">
+                                            {% for price_info in delivery_types.6.prices %}
+                                                <option value="{{ forloop.counter0 }}">{{ price_info.label }}
+                                                    - {{ price_info.price }}р.
+                                                </option>
+                                            {% endfor %}
+                                        </select>
+                                    </label>
+                                </p>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% endcomment %}
+
+</div>
+
+
+</div>

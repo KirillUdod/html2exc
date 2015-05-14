@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block title %}Спасибо за оплату заказа!{% endblock %}
+
+{% block content %}
+    <div id="ordered">
+        <div class="head">Спасибо за заказ!</div>
+        <div class="cont">
+            Ваш заказ {% if order_id %}№ {{ order_id }} {% endif %}успешно оформлен, мы свяжемся с вами в ближайшее время.
+            <br>
+            Подробности заказа отправлены на Ваш почтовый ящик.
+            <br>
+            <br>
+            <a href="/">Вернуться в магазин</a>
+            <br>
+            <br>
+            <img src='{{ STATIC_URL }}images/heart.png'>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,8 @@
+@font-face {
+    font-family: 'MyriadProItalic';
+    src: url('myriadpro-it.eot');
+    src: url('myriadpro-it.eot') format('embedded-opentype'),
+         url('myriadpro-it.woff') format('woff'),
+         url('myriadpro-it.ttf') format('truetype'),
+         url('myriadpro-it.svg#MyriadProItalic') format('svg');
+}

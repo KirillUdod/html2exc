@@ -1,0 +1,12 @@
+#paymebt_ways .selection {
+    display:table;
+    margin:7px auto 2px auto;
+    position:relative;
+    top:0px;
+}
+
+
+p.error{
+    color: #ff2222;
+    font-size: 15px;
+}

@@ -1,0 +1,9 @@
+pillow
+psycopg2
+django-robokassa
+South
+python-dateutil
+django==1.5
+django-tinymce
+django-tinymce-filebrowser
+django-smtp-ssl

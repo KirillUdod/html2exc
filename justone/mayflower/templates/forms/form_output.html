@@ -1,0 +1,10 @@
+{% if back_call_message %}
+    {{ back_call_message }}
+{% else %}
+    {% for field in back_call_form %}
+        {{ field }}
+    {% endfor %}
+    {% csrf_token %}
+    <input type="hidden" name="back_call" value="Y">
+    <a href="javascript:void(0);" class="btn_blue" onclick="back_call_callback();">Отправить</a>
+{% endif %}

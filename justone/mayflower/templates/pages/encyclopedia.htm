@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block top %}{% endblock %}
+
+{% block title %}Энциклопедия цветов{% endblock %}
+{% block keywords %}Энциклопедия цветов, Розы, тюльпаны, нарциссы, гладиолусы, 100 видов цветов{% endblock %}
+{% block description %}Энциклопедия цветов. Розы, тюльпаны, лилии, нарциссы, гладиолусы - информация более чем про 100 цветов со всего мира!{% endblock %}
+
+{% block left_block %}
+    <link type="text/css" rel="stylesheet" href="{{ STATIC_URL }}css/encyclopedia.css">
+    <div id="page_cont">
+        <h3>Энциклопедия цветов</h3>
+        <div id="mainText">
+            <br><br>
+            <a class="enc_href" href="/1.html">Агератум</a>
+            <a class="enc_href" href="/2.html">Агростемма</a>
+            <a class="enc_href" href="/3.html">Адиантум</a>
+            <a class="enc_href" href="/4">Аквилегия</a>
+            <a class="enc_href" href="/5">Аконит</a>
+            <br style="clear: both;">
+
+        </div>
+	</div>
+{% endblock %}

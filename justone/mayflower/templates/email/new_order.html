@@ -1,0 +1,7 @@
+Вы оформили новый заказ на сайте {{ domain_name }}
+Номер заказа {{ order.id }}
+
+Информация о заказе:
+{% for name, value in order_info.itervalues %}
+    {{ name }}: {{ value|default:'-'|safe }}
+{% endfor %}

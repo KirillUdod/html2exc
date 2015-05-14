@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+
+{% block top %}{% endblock %}
+
+{% block title %}Условия оплаты при покупке цветов в магазине MayFlo.ru{% endblock %}
+{% block keywords %}Условия оплаты, оплатить заказ{% endblock %}
+{% block description %}Оплата заказа при покупке букетов цветов в магазине MayFlo.ru{% endblock %}
+
+{% block content %}
+    <link type="text/css" rel="stylesheet" href="{{ STATIC_URL }}css/page.css">
+
+    <div id="del_pay_main_content">
+    <style>
+        h4{
+            font-size: 21px;
+            margin: 15px 0;
+            font-family: Georgia;
+        }
+
+        #page_cont{
+            font-size: 18px;
+            font-family: Georgia;
+            color: #303335;
+        }
+    </style>
+    <div id="page_cont">
+        <h1>Условия оплаты</h1>
+
+        <h4>Все платежи, за исключением оплаты наличными, осуществляются через систему WalletOne.</h4>
+        <div>Вы можете оплатить свой заказ:</div>
+        <h4>1.<img src="{{ STATIC_URL }}images/cash.jpg">Наличными</h4>
+        <div>При получении букета.</div>
+        <h4>2.<img src="{{ STATIC_URL }}images/visa.jpg">Банковской картой VISA или MasterCard</h4>
+        <div>
+            <strong>WalletOne обеспечивает безопасность всех транзакций</strong>
+            для всех подключенных магазинов и их клиентов.
+            Все оплаты банковскими картами проходят проверку системой, что повышает безопасность приема платежей.
+        </div>
+        <h4>3.<img src="{{ STATIC_URL }}images/webmoney.jpg">Электронным платежом Webmoney, Яндекс.Деньги, Деньги@Mail.ru и других систем</h4>
+		<div>Чтобы оплатить заказ с помощью WebMoney выберите данный способ оплаты на странцие оформления заказа и нажмите кнопку "Заказать". После перехода в платежную систему выберите способ оплаты WebMoney и следуйте дальнейшим инструкциям.</div>
+        <h4>4.<img src="{{ STATIC_URL }}images/qiwi.jpg">Через терминалы QIWI и другие</h4>
+        <h4>5.<img src="{{ STATIC_URL }}images/sber.jpg">С помощью системы "Интернет-банк"</h4>
+        <!--<h4>6.<img src="{{ STATIC_URL }}images/robokassa.jpg">Через приложение "ROBOKASSA" для iPhone</h4>
+        <div>Программу ROBOKASSA для iPhone Вы можете установить из каталога ITunes.</div>-->
+		<h4>5.<img src="/media/images/kur_pay.png">Выезд курьера за оплатой</h4>
+		<div>Хотите поздравить любимого человека на расстоянии и у Вас нет возможности оплатить заказ Онлайн? Не беда! Наш курьер примчится к Вам за оплатой в любое удобное время! <br><br>Стоимость услуги - 250 рублей. </div>
+<br><br><br>
+    </div>
+
+                    <div class="clear"></div>
+                </div>
+{% endblock %}

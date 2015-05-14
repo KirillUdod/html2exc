@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% load page_utils %}
+
+{% block title %}{{ page.title }}{% endblock %}
+{% block description %}{{ page.description }}{% endblock %}
+{% block keywords %}{{ page.keywords }}{% endblock %}
+
+{% block top %}{% endblock %}
+
+{% block left_block %}
+    <h1>{{ page.header }}</h1>
+    {% render_as_template page.content_for_render %}
+{% endblock %}

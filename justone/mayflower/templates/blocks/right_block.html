@@ -1,0 +1,30 @@
+{% load catalog %}
+<div class="banner1" style="margin-top:15px;">
+    <a href="##"></a>
+</div>
+
+<div id="basket_right_cont">
+    <a href="{% url 'order' %}" class="basket_right">Корзина
+        <i class="icon-chevron-down_right"></i>
+        <div class="in_basket_right" id="basket_goods_count">{{ basket.goods_count }}</div>
+    <span>
+        <span class="basket_icon"></span>
+    </span>
+    </a>
+    <div class="basket_price">{{ basket.summary|number_separator }} р.</div>
+</div>
+
+<div class="banner2" style="margin-top:75px;">
+    <div class="banner2_fon">Принимаем к оплате:</div>
+    <div class="another_pay">
+        <a href="{% url 'payment_info' %}">Другие методы оплаты</a>
+        <img src="{{ STATIC_URL }}images/arrow-3-green-right.png">
+    </div>
+</div>
+
+<div class="banner3" style="margin-top:25px;"></div>
+
+<div id="vk_groups" style="margin-top: 25px; margin-left: 10px; height: 350px; width: 225px; background: none;"></div>
+<script type="text/javascript">
+VK.Widgets.Group("vk_groups", {mode: 0, width: "225", height: "350", color1: 'FFFFFF', color2: '2B587A', color3: 'FF6896'}, 63304942);
+</script>

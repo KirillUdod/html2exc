@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+
+{% load blog_tags %}
+
+{% block left_block %}
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/blog.css">
+
+    <div class="blogsNews">
+        {% block blog_title %}{% endblock %}
+        <div class="bgNews__basicFirst">
+            <div class="bgNews__basicSecond">
+                <div class="bgNews__basicThird">
+                    <div class="bgNews__basic">
+                        {% block blog_content %}{% endblock %}
+                    </div>
+                    <div class="bgNews__sidebar">
+                        <div class="bgNewsSB__box">
+                            {% if not object %}
+                                <div class="bgNewsSB__boxItem">
+                                    <div id="blog_calendar"></div>
+                                </div>
+                            {% endif %}
+                            {% if last_blog_items %}
+                                <div class="bgNewsSB__boxItem">
+                                    <div class="bx__chartsTitle">Последние:</div>
+                                    <ul class="bx__charts">
+                                        {% for blog_item in last_blog_items %}
+                                            <li class="bx__chartsItem">
+                                                <a href="{{ blog_item.get_absolute_url }}">{{ blog_item.title }} &#9658;</a>
+                                            </li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                            {% endif %}
+
+                            {% if tags %}
+                                <div class="bgNewsSB__boxItem">
+                                    <div class="bx__tagsTitle">Тэги:</div>
+                                    <ul class="bx__tags">
+                                        {% for tag in tags %}
+                                            <li class="bx__tagsItem">
+                                                <a href="{% url 'blog_index' %}{% blog_path tag_id=tag.id %}">{{ tag.name }}</a>
+                                            </li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

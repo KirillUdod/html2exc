@@ -1,0 +1,93 @@
+{% extends 'blog/base.html' %}
+
+{% load blog_tags %}
+
+{% block title %}{{ blog_main_page.page_title }}{% endblock %}
+{% block description %}{{ blog_main_page.page_description }}{% endblock %}
+{% block keywords %}{{ blog_main_page.page_keywords }}{% endblock %}
+
+
+{% block ext_head %}
+    <script src="{{ STATIC_URL }}js/jquery-ui.js"></script>
+
+    <script>
+        {% if filter_date %}
+            var filteredDate = new Date();
+            filteredDate.setTime(Date.parse('{{ filter_date|date:'Y/m/d' }}'));
+        {% elif filter_month %}
+            var filteredDate = new Date();
+            filteredDate.setTime(Date.parse('{{ filter_month|date:'Y/m/1' }}'));
+        {% else %}
+            var filteredDate = null;
+        {% endif %}
+    </script>
+{% endblock %}
+
+
+{% block blog_title %}
+    <h1 class="blogsNews__title i-blog">
+        <a href="{% url 'blog_index' %}">Блог</a>
+        {% if filter_tag %}
+            &nbsp;/&nbsp;Записи с тегом "{{ filter_tag.name }}"
+        {% elif filter_month %}
+            &nbsp;/&nbsp;Записи за {{ filter_month|date:"F Y"|lower }}
+        {% elif filter_date %}
+            &nbsp;/&nbsp;Записи за {{ filter_date|date:'d.m.Y' }}
+        {% endif %}
+    </h1>
+{% endblock %}
+
+
+{% block blog_content %}
+<div class="bgNews__basic article">
+    <table class="bgNews__list">
+        {% for chunk in object_list %}
+            <tr class="bgNews__row first">
+                {% for blog_item in chunk %}
+                    <td{% if not blog_item %} class="no_border"{% endif %}>
+                        {% if blog_item %}
+                            <a class="linkImg" href="{{ blog_item.get_absolute_url }}">
+                                <img src="{{ blog_item.preview_image.url }}" alt="{{ blog_item.title }}" title="{{ blog_item.title }}">
+                            </a>
+                        {% else %}
+                            &nbsp;
+                        {% endif %}
+                    </td>
+                {% endfor %}
+            </tr>
+            <tr class="bgNews__row second">
+                {% for blog_item in chunk %}
+                    <td{% if not blog_item %} class="no_border"{% endif %}>
+                        {% if blog_item %}
+                            <h2 class="title"><a href="{{ blog_item.get_absolute_url }}">{{ blog_item.title }}</a></h2>
+                            <span class="date">{{ blog_item.create_date|date:"F, d, Y" }}</span>
+                        {% else %}
+                            &nbsp;
+                        {% endif %}
+                    </td>
+                {% endfor %}
+            </tr>
+        {% endfor %}
+    </table>
+
+    {% if is_paginated %}
+        <div class="bgNews__paginator">
+            {% if page_obj.has_previous %}
+                <a class="bgNews__paginBtn prev" href="{% blog_path page_num=page_obj.previous_page_number %}">&lt;&nbsp;Предыдущая</a>
+            {% endif %}
+            <ul class="bgNews__paginList">
+                {% for page_num in paginator.page_range %}
+                    <li>
+                        {% if page_num != page_obj.number %}<a href="{{ request.path }}{% blog_path page_num=page_num %}">{% endif %}
+                            {{ page_num }}
+                        {% if page_num != page_obj.number %}</a>{% endif %}
+                    </li>
+                {% endfor %}
+            </ul>
+            {% if page_obj.has_next %}
+                <a class="bgNews__paginBtn next" href="{% blog_path page_num=page_obj.next_page_number %}">Следующая&nbsp;&gt;</a>
+            {% endif %}
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

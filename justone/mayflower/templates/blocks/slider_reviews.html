@@ -1,0 +1,24 @@
+{% if reviews %}
+    <div class="slider" id="reviews">
+        <div class="head">
+            <div>Отзывы наших клиентов</div>
+        </div>
+        <div class="shadow_reviews"></div>
+        <ul class="jcarousel-skin-reviews">
+            {% for review in reviews %}
+                <li{% cycle '' ' class="type2"' %}>
+                    <img src="{{ STATIC_URL }}images/quote_reviews.jpg" class="quote">
+                    <div class="review">
+                        {{ review.text }}
+                    </div>
+                    <div class="user_info">
+                        <img src="{% if review.picture %}{{ review.picture.url }}{% else %}{{ STATIC_URL }}images/reviews_no_image.jpg{% endif %}">
+                        <div class="name">{{ review.name }}</div>
+                        <div class="age red">{{ review.age }}</div>
+                    </div>
+                </li>
+            {% endfor %}
+        </ul>
+        <div class="shadow_reviews2"></div>
+    </div>
+{% endif %}

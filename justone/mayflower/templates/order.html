@@ -1,0 +1,376 @@
+{% extends 'base.html' %}
+{% load catalog %}
+{% block title %}Оформление заказа. Укажите контактные данные.{% endblock %}
+{% block keywords %}Оформление заказа. Укажите контактные данные.{% endblock %}
+{% block description %}Оформление заказа. Укажите контактные данные.{% endblock %}
+
+{% block ext_head %}
+    <script type="text/javascript" src="{{ STATIC_URL }}js/catalog.js"></script>
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/catalog.css">
+
+    <script type="text/javascript">
+        var freeDeliveryPrice = {{ free_delivery_price }};
+        var addToyPrice = {{ add_toy_price }};
+        var selectedDeliveryPrice = 0, deliveryTypes = {};
+
+        {% for type, delivery_info in delivery_types.iteritems %}
+            {% if delivery_info.price or not delivery_info.prices %}
+                deliveryTypes[{{ type }}] = {{ delivery_info.price }};
+            {% else %}
+                deliveryTypes[{{ type }}] = [];
+                {% for price_info in delivery_info.prices %}
+                    deliveryTypes[{{ type }}].push({{ price_info.price }});
+                {% endfor %}
+            {% endif %}
+        {% endfor %}
+
+        $(document).ready(function(){
+            $(".btn-slide").click(function(){
+                $(".mega").slideToggle("slow");
+                $(this).toggleClass("active");
+                $("#delivery_additions_cont").css("display", "none");
+                $(".mega_button").css("display", "none");
+            });
+
+            $(".way_but").click(function(){
+                $(this).toggleClass("active");
+                $(this).siblings().removeClass("active");
+                $(".cour_drive").removeClass("active");
+
+                $('#pay_type').val($('.way_but.active').attr('rel') || '');
+
+                if ($(this).hasClass('nal')){
+                    $(".cour_drive").toggleClass("active");
+                    $(".cour_drive").siblings().removeClass("active");
+                }
+                orderFormChanged();
+            });
+
+            orderFormChanged();
+        });
+    </script>
+    <link href="{{ STATIC_URL }}css/order.css" rel="stylesheet" type="text/css">
+    <link href="{{ STATIC_URL }}jquery_ui/jquery-ui-1.10.3.custom.min.css" rel="stylesheet" type="text/css">
+{% endblock %}
+
+{% block content %}
+    <div id="main_content_delivery">
+    {% include 'blocks/basket.html' %}
+
+    <div class="mega_button"{% if not basket.goods_count %} style="display: none;" {% endif %}>
+        <a href="javascript: void(0);" onclick="yaCounter23651305.reachGoal('ORDEROPEN')" class="btn-slide">Оформить заказ</a>
+    </div>
+
+    <div id="delivery_additions_cont"{% if show_form %} style="display: none;" {% endif %}>
+
+        <div class="add_desc">
+            <span class="add_desc_text">Не проходите мимо!</span>
+        </div>
+        <!--<div class="delivery_additions_shadow"></div>-->
+        <div id="additions_delivery_main">
+            <ul class="add_good">
+                {% for good in add_goods %}
+                    <li class="add_item">
+                        <div>
+                            <a href="{{ good.get_absolute_url }}">
+                                <img src="{{ good.picture.url }}" height="128" width="128" alt="{{ good.name }}" title="{{ good.name }}">
+                                <p class="add_text">{{ good.name }}</p>
+                            </a>
+                            <div class="add_price">
+                                <strong>{{ good.get_base_price }} Р</strong>
+                            </div>
+                            <div class="add_basket">
+                                <a href="#" onclick="basket_add({{ good.id }}, '{{ good.CATEGORY_TYPE }}');return false" class="add_basket_input"></a>
+                            </div>
+                        </div>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+        <div class="buket_separator_mini"></div>
+    </div>
+
+    <form action="" method="post" name="orderForm">
+        <input type="hidden" value="1" name="delivery_type" id="delivery_type">
+        {% csrf_token %}
+
+    <div class="mega"{% if show_form %} style="display: block;"{% endif %}>
+
+    <div id="mega_title"><hr>Оформление заказа<hr></div>
+
+    {% for field in order_form %}
+        {% if field.errors %}
+            <p class="error">
+                {% if field.name != 'accept_terms' %}{{ field.label }}:&nbsp;{% endif %} {{ field.errors.0 }}
+            </p>
+        {% endif %}
+    {% endfor %}
+
+    {% for error in order_form.non_field_errors %}
+        <p class="error">{{ error }}</p>
+    {% endfor %}
+
+    <div id="catalog" style="width=900px;">
+        <div class="сatalog_cont">
+            <div class="catalog_icon">1</div>
+            <div class="title">Дата доставки</div>
+        </div>
+        <div class="shadow_catalog"></div>
+    </div>
+
+    <div class="delivery_date">
+        <div>
+            {{ order_form.delivery_date }}
+            <div class="day_day">
+                Нужно доставить сегодня? Уточняйте возможность по <a class="call_order" href="javascript: void(0);" onclick="show_call_form();">телефону 8 (495) 720 72 45</a>
+            </div>
+        </div>
+    </div>
+
+    <div id="attention_delivery"{% if order_form.delivery_today %} style="display: block"{% endif %}>Минимальное время доставки заказов "День в день" - 2 часа с момента подтверждения заказа</div>
+
+    <div id="catalog" style="width=900px;">
+        <div class="сatalog_cont">
+            <div class="catalog_icon">2</div>
+            <div class="title">Способ доставки</div>
+        </div>
+        <div class="shadow_catalog"></div>
+    </div>
+
+    {% include 'blocks/delivery_types.html' %}
+
+    <div id="catalog" style="width=900px;">
+        <div class="сatalog_cont">
+            <div class="catalog_icon">3</div>
+            <div class="title">Адресат</div>
+        </div>
+        <div class="shadow_catalog"></div>
+    </div>
+
+    <div id="order">
+        <div class="block">
+            <!--<img src="./Букет  Душевные глубины ! с доставкой по Москве и Московской области. Магазин цветов MayFlo.ru_files/order_photo.jpg">-->
+            <div class="head">Заполните информацию о себе:</div>
+            {{ order_form.name }}
+            {{ order_form.phone }}
+            {{ order_form.email }}
+            <div class="call_type">
+                <table class="ord_t">
+                    <tbody>
+
+                    <tr>
+                        <td>
+                           {{ order_form.anonymous_delivery }}{{ order_form.anonymous_delivery.label_tag }}
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>
+                           {{ order_form.customer_is_destination }}{{ order_form.customer_is_destination.label_tag }}
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>
+                           {{ order_form.phone_only }}{{ order_form.phone_only.label_tag }}
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+
+        </div>
+        <div class="block" id="order_info">
+            <div class="head">Кому доставляем:</div>
+            {{ order_form.destination_name }}
+            {{ order_form.destination_phone }}
+            {{ order_form.destination_address }}
+            {{ order_form.comments }}
+        </div>
+        <div class="dop_block">
+            <div class="dop_block_cont">
+                <div class="strelka">
+
+                </div>
+                <div class="comm">
+                    Анонимная доставка - Отличная услуга для тех, кто хочет оставаться в тени. Не беспокойтесь, получатель никогда не узнает от кого был доставлен подарок - Ваши данные будут зашифрованы даже в накладных.<br><br><br><br>Здесь Вы можете оставить Ваши пожелания.<br><br>Tакже же вы можете оставить здесь Текст
+                    <a class="plus_up" href="javascript: void(0);" onclick="return false;" <!--onclick="show_plus_payment();-->">открытки.</a>
+                </div>
+
+
+            </div>
+            <div id="additions_delivery" name="plus_payment">
+                <ul class="add_good">
+                    <li class="add_item">
+                        <a href="#">
+                            <img src="{{ STATIC_URL }}images/ex_icon.png" height="128" width="128">
+                        </a>
+                        <p class="add_text">Букет из 9 шаров «Смайл в очках»</p>
+                        <div class="add_price">
+                            <strong>1 500 Р</strong>
+                        </div>
+                        <div class="add_basket">
+                            <a href="#" onclick="basket_add(1, 155);return false" class="add_basket_input"></a>
+                        </div>
+                    </li>
+                </ul>
+                <a class="close" href="javascript:void(0);"></a>
+            </div>
+
+        </div>
+    </div>
+
+    <div id="catalog" style="width=900px;">
+        <div class="сatalog_cont">
+            <div class="catalog_icon">4</div>
+            <div class="title">Как Вам удобнее оплатить?</div>
+        </div>
+        <div class="shadow_catalog"></div>
+    </div>
+
+    <div id="payment_ways">
+        <input type="hidden" value="{{ order_form.pay_type.0.value }}" name="{{ order_form.pay_type.html_name }}" id="{{ order_form.pay_type.html_name }}">
+        <div class="ways">
+            {% for choice in order_form.pay_type %}
+                {% if choice.choice_value %}
+                    <div class="{{ choice.choice_value }} way_but{% if choice.choice_value == choice.value %} active{% endif %}" style="opacity: 0.5;" rel="{{ choice.choice_value }}">
+                        <a href="javascript:return false;">
+                            <span class="name">{{ choice.choice_label }}</span>
+                        </a>
+                    </div>
+                {% endif %}
+            {% endfor %}
+            <div class="clear"></div>
+        </div>
+
+        <div class="cour_drive{% if order_form.pay_type.0.value == 'nal' %} active{% endif %}">
+            <div class="cour_drive_date">
+                {{ order_form.pay_for_delivery_date }}
+            </div>
+
+            <div class="cour_time">
+                <div class="cour_time-inner">
+                    <p class="cour_time-input">
+                        <label for="{{ order_form.pay_for_delivery_time.auto_id }}" class="select">
+                            {{ order_form.pay_for_delivery_time }}
+                        </label>
+                    </p>
+                </div>
+            </div>
+
+            <div class="cour_drive_adress">
+                {{ order_form.pay_for_delivery_address }}
+            </div>
+
+            <div class="cour_drive_description">При выборе данной услуги указывайте время приезда курьера за оплатой не позднее, чем за 3 часа до времени доставки букета получателю</div>
+
+        </div>
+        <div class="clear"></div>
+
+        <div class="add_to_pay">
+            <table class="pay_t1">
+                <tbody>
+                    {% for choice in order_form.clarify_type %}
+                        <tr><td>{{ choice }}</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            <table class="pay_t2">
+                <tbody>
+                <tr>
+                    <td>{{ order_form.make_photo }}{{ order_form.make_photo.label_tag }}</td>
+                </tr>
+
+                <tr>
+                    <td>{{ order_form.send_sms }}{{ order_form.send_sms.label_tag }}</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div id="catalog" style="width=900px;">
+        <div class="сatalog_cont">
+            <div class="catalog_icon">5</div>
+            <div class="title">Бесплатные услуги при доставке</div>
+        </div>
+        <div class="shadow_catalog"></div>
+    </div>
+
+    <div id="dop_pay">
+        <div class="add_to_pay2">
+            <table class="dop_t1">
+                <tbody>
+                <tr>
+                    <td>
+                        {{ order_form.add_card.1 }}
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>
+                        {{ order_form.add_card.2 }}
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+
+            <table class="dop_t2">
+                <tbody>
+                <tr>
+                    <td>
+                        {{ order_form.add_card.3 }}
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>
+                        {{ order_form.add_toy}}
+                        <label for="{{ order_form.add_toy.auto_id}}">{{ order_form.add_toy.label }}<p>(для заказов от 2000 рублей)</p></label>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+        <div id="catalog" style="width=900px;">
+            <div class="сatalog_cont">
+                <div class="catalog_icon">€</div>
+                <div class="title">Итоговая сумма</div>
+            </div>
+            <div class="shadow_catalog"></div>
+        </div>
+
+        <div id="final_step">
+            <div class="final_summ" id="order_summ">{{ basket.summary|number_separator }} {{ basket.summary|rupluralize:"рубль,рубля,рублей" }}</div>
+            <div class="final_summ_dop" id="order_delivery_price">(включая доставку <span>0</span> рублей)</div>
+            <a href="#" class="order_btn" onclick="document.forms.orderForm.submit();yaCounter23651305.reachGoal('ORDER');return false;">Заказать</a>
+        </div>
+
+
+        <div id="agreement_delivery">
+            <table class="ad_table">
+                <tbody>
+                    <tr>
+                        <td>
+                            {{ order_form.accept_terms }}{{ order_form.accept_terms.label_tag }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <a href="{% url 'delivery_info' %}" target="_blank">Условия доставки</a>
+                            <img src="{{ STATIC_URL }}images/arrow-3-green-right.png">
+                        </td>
+                    </tr>
+                </tbody>
+              </table>
+        </div>
+
+        <div class="clear"></div>
+    </div>
+    </div>
+    </form>
+{% endblock %}

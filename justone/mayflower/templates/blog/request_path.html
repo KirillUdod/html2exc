@@ -1,0 +1,1 @@
+{{ request.path }}{% if page_num %}?page={{ page_num }}{% endif %}{% if has_filter %}{% if page_num %}&{% else %}?{% endif %}{% if tag_id %}tag={{ tag_id }}{% elif month %}month={{ month|date:'Y.m' }}{% elif date %}date={{ date|date:'Y.m.d' }}{% endif %}{% endif %}

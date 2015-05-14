@@ -1,0 +1,20 @@
+<div id="basket_popup">
+    <div class="bp_cont">
+    <div class="close"></div>
+    <div class="title">добавлено в корзину</div>
+    <div class="basket_popup_cont">
+        <div class="left">
+            <img src="{{ product.picture.url }}" title="{{ product.name }}" alt="{{ product.name }}">
+        </div>
+        <div class="right">
+            <div class="description">{{ text|safe }}</div>
+            <div class="price">{{ price|safe }}</div>
+        </div>
+
+        </div>
+    </div>
+    <div class="center">
+        <a class="continue_btn" href="javascript:void(0);" id="basket_continue">Продолжить выбор</a>
+        <a class="show_order_btn" href="{% url 'order' %}"><i class="icon-forward icon-white"></i>Оформить заказ</a>
+    </div>
+</div>

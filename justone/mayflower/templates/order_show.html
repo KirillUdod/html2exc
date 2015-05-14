@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block title %}Информация по заказу №{{ order.id }}{% endblock %}
+{% block content %}
+    <div id="ordered">
+        <div class="head">Заказ №{{ order.id }}</div>
+        <div class="cont">
+            Дата заказа: {{ order.date }}<br>
+            Состав заказа: {{ order.positions }}<br>
+            Тип доставки: {{ order.delivery_type }}<br>
+            Время доставки: {{ order.delivery_time }}<br>
+            Стоимость заказа: {{ order.order_price }}<br>
+            Стоимость доставки: {{ order.delivery_price }}<br><br>
+            {% if pay_online and not order.is_paid %}
+                Заказ еще не оплачен. Вы можете <a href="{{ pay_href }}">оплатить</a> его онлайн.
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

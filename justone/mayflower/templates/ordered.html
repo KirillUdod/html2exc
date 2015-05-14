@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block title %}Спасибо за заказ!{% endblock %}
+
+{% block after_basket %}{% endblock %}
+
+{% block content %}
+<script>// < ![CDATA[
+window.onload = function() {
+yaCounter23651305.reachGoal('ORDERED')
+}
+// ]]></script>
+    <div id="ordered">
+        <div class="head">Спасибо за заказ!</div>
+		<div class="shadow_catalog"></div>
+        <div class="cont">
+            Ваш заказ № {{ order.id }} успешно оформлен, мы свяжемся с вами в ближайшее время.
+            <br>
+            Подробности заказа отправлены на Ваш почтовый ящик.
+            <br>
+            {% if pay_online %}
+                <a href="{{ pay_href }}">Оплатить</a>
+                <br>
+            {% endif %}
+			<a href="/">Вернуться в магазин</a>
+            <br>
+            <br>
+            <img src="{{ STATIC_URL }}images/thankyou.png">
+        </div>
+    </div>
+{% endblock %}

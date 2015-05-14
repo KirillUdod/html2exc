@@ -1,0 +1,62 @@
+{% load catalog %}
+
+
+{% if basket_error %}
+    <div id="error"><span></span>{{ basket_error }}</div>
+{% endif %}
+
+<table id="basket">
+    <tr>
+        <th colspan="5" class="main_row">Ваш заказ</th>
+    </tr>
+
+    {% for item in basket.basket_items %}
+        <tr class="item{% cycle '' ' blue' as rowcolors %}">
+            <td class="number">{{ forloop.counter }}</td>
+            <td>
+                <div class="name">
+                    {{ item.product.name }}
+                    {% if item.product.CATEGORY_TYPE == 'bouquet' and item.product_price_type %}
+                        ({{ item.get_product_price_type_display }})
+                    {% endif %}
+                </div>
+                <div class="description">
+                    {% ifequal item.product.CATEGORY_TYPE 'bouquet' %}
+                        {% if item.product.one_price %}
+                            {{ item.price_type_short_description }}
+                        {% else %}
+                            {{ item.quantity }} {{ item.product|bouquet_pluralize:item.quantity }}
+                            {% if item.height %}&nbsp;{{ item.height }} см.{% endif %}
+                        {% endif %}
+                    {% else %}
+                        {{ item.product.short_description }} количество: {{ item.quantity }}
+                    {% endifequal %}
+                </div>
+            </td>
+            <td class="price">{{ item.price }} {{ item.price|rupluralize:'рубль,рубля,рублей' }}</td>
+            <td class="remove">
+                <a href="javascript:void(0);" onclick="remove_from_basket({{ item.id }});">&nbsp;</a>
+            </td>
+        </tr>
+    {% endfor %}
+    {% if basket.delivery_price %}
+        <tr class="item{% cycle rowcolors %}">
+            <td class="number">&nbsp;</td>
+            <td>
+                <div class="name">Стоимость доставки</div>
+                <div class="description">&nbsp;</div>
+            </td>
+            <td class="price">{{ basket.delivery_price }} {{ basket.delivery_price|rupluralize:'рубль,рубля,рублей' }}</td>
+            <td class="remove">&nbsp;</td>
+        </tr>
+    {% endif %}
+    <tr class="item total{% cycle rowcolors %}">
+        <td class="number">&nbsp;</td>
+        <td>
+            <div class="name">Итого</div>
+            <div class="description">{{ basket.goods_count }} {{ basket.goods_count|rupluralize:'товар,товара,товаров' }}</div>
+        </td>
+        <td class="price">{{ basket.summary }} {{ basket.summary|rupluralize:'рубль,рубля,рублей' }}</td>
+        <td class="remove">&nbsp;</td>
+    </tr>
+</table>

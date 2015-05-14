@@ -1,0 +1,65 @@
+{% extends 'blog/base.html' %}
+
+{% load thumbnail %}
+
+{% block title %}{{ object.page_title }}{% endblock %}
+{% block description %}{{ object.page_description }}{% endblock %}
+{% block keywords %}{{ object.page_keywords }}{% endblock %}
+
+
+{% block ext_head %}
+    <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/jquery.colorbox/1.4.33/example1/colorbox.min.css"/>
+{#    <style>#}
+{#        #cboxCurrent{#}
+{#            font-size: 14px;#}
+{#        }#}
+{#    </style>#}
+    <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/jquery.colorbox/1.4.33/jquery.colorbox-min.js"></script>
+    <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/jquery.colorbox/1.4.33/i18n/jquery.colorbox-ru.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function(){
+            $(".group1").colorbox({rel:'group1', maxWidth: '100%', maxHeight: '100%'});
+        });
+    </script>
+{% endblock %}
+
+
+{% block blog_title %}
+    <div class="blogsNews__title i-blog">Блог</div>
+{% endblock %}
+
+
+{% block blog_content %}
+    {% comment %}
+    <ul>
+        {% for tag in object.tags.all %}
+            <li data-id="{{ tag.id }}">{{ tag }}</li>
+        {% endfor %}
+    </ul>
+    {% endcomment %}
+    <h1 class="bgNews__basicTitle">{{ object.title }}</h1>
+    <div class="bgNews__basicDate">{{ object.create_date|date:"F, d, Y" }}</div>
+    <div class="bgNews__basicContent">
+        <div class="imageCenter">
+            <img src="{{ object.detail_image.url }}" alt="{{ object.title }}" title="{{ object.title }}">
+        </div>
+        {{ object.content|safe }}
+
+        {% with object.extra_images.all as extra_images %}
+            {% if extra_images %}
+                <ul class="imageList">
+                    {% for extra_image in extra_images %}
+                        <li>
+                            <a class="group1" href="{{ extra_image.image.url }}">
+                                {% thumbnail extra_image.image '200' crop='center' quality=100 as img %}
+                                    <img src="{{ img.url }}"
+                                            {% if extra_image.name %} alt="{{ extra_image.name }}" title="{{ extra_image.name }}"{% endif %}/>
+                                {% endthumbnail %}
+                            </a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        {% endwith %}
+    </div>
+{% endblock %}

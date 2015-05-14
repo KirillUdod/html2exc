@@ -1,0 +1,92 @@
+{% load catalog %}
+
+{% comment %}
+<link type="text/css" rel="stylesheet" href="{{ STATIC_URL }}css/jquery.countdown.css">
+<script type="text/javascript" src="{{ STATIC_URL }}js/jquery.countdown.js"></script>
+
+<script type="text/javascript">
+    $(document).ready(function()
+    {
+        $('#countdown').jCountdown({
+            timeText: '{{ countdown_date|date:'Y/m/d H:i:s' }}',
+            timeZone: +4,
+            style: "slide",
+            color: "white",
+            width: '226px',
+            textGroupSpace: 9,
+            textSpace: 0,
+            reflection: false,
+            reflectionOpacity: 10,
+            reflectionBlur: 0,
+            dayTextNumber: 2,
+            displayDay: true,
+            displayHour: true,
+            displayMinute: true,
+            displaySecond: true,
+            displayLabel: false,
+            onFinish: function()
+            {
+                $('#countdown').remove();
+            }
+        });
+    })
+</script>
+{% endcomment %}
+
+{% if promo %}
+    <div id="promo_slider_cont">
+        <div class="promo_slider_inner">
+            <a class="promo_slider_head" href="{{ promo.0.get_absolute_url }}">
+                <img src="{{ promo.0.slider_photo.url }}" title="{{ promo.0.name }}" alt="{{ promo.0.name }}"/>
+                <!--<div id="countdown"></div>-->
+            </a>
+            <div id="promo_slider">
+                <ul>
+                    {% for promo_item in promo %}
+                        <li>
+                            {% comment %}
+                            <div class="title">
+                                {% if product.one_price %}
+                                    {{ product.short_description }}
+                                {% else %}
+                                    {{ product.slider_quantity }} {{ product|bouquet_pluralize:product.slider_quantity }}
+                                {% endif %}
+                            </div>
+                            <div class="name">
+                                <div class="left">{{ product.name }}</div>
+                                <a class="right red" href="{{ product.get_absolute_url }}#buy_menu">заказать</a>
+                            </div>
+                            <div class="price red">
+                                {% if product.one_price %}
+                                    {{ product.price }} {{ product.price|rupluralize:'рубль,рубля,рублей' }}
+                                {% else %}
+                                    {{ product.slider_price }} {{ product.slider_price|rupluralize:'рубль,рубля,рублей' }}
+                                {% endif %}
+                            </div>
+                            {% endcomment %}
+                            <div class="slider_photo" data-href="{{ promo_item.get_absolute_url }}">
+                                <img style="display: none;" src="{{ promo_item.slider_photo.url }}" title="{{ promo_item.name }}" alt="{{ promo_item.name }}"/>
+                            </div>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+            <div id="shadow_slider3"></div>
+
+            <div id="slider_selector_cont">
+                <div class="slider_selector">
+                    <div class="slider_selector_inner">
+                        {% for promo_item in promo %}
+                            <span class="round{% if not forloop.counter0 %} activated{% endif %}" rel="{{ forloop.counter0 }}"></span>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="promo_slider_blocks">
+            {% include 'blocks/banners_top.html' %}
+        </div>
+    </div>
+{% endif %}

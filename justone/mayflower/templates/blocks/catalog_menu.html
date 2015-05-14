@@ -1,0 +1,48 @@
+<!--<script src="{{ STATIC_URL }}nicescroll/jquery.nicescroll.min.js"></script>-->
+
+<script type="text/javascript">
+    var active_category_type = '{{ active_category_type }}' || undefined;
+</script>
+
+<div id="catalog_menu">
+    <div id="catalog_menu_accordion">
+        <h3 class="category_head section" id="bouquet_category" rel='0'>Букеты</h3>
+        <div class="category">
+            {% for category in main_menu.bouquet.subcategories %}
+                <a class="item_wrapper{% ifequal category.CATEGORY_TYPE active_category_type %}{% ifequal category.id active_category %} active{% endifequal %}{% endifequal %}" href="{{ category.get_absolute_url }}">
+                    <div class="cell icon">
+                        <img src="{{ category.picture.url }}" alt="{{ category.name }}" title="{{ category.name }}" class="category_thumb">
+                    </div>
+                    <div class="cell">
+                        {{ category.name }}
+                    </div>
+                    <div class="cell chevron">
+                        <i class="icon-chevron-right"></i>
+                    </div>
+                </a>
+            {% endfor %}
+        </div>
+        <h3 class="category_head2 section" id="unusual_category" rel='1'>Необычности</h3>
+        <div class="category">
+            {% for category in main_menu.unusual.subcategories %}
+                <a class="item_wrapper{% ifequal category.CATEGORY_TYPE active_category_type %}{% ifequal category.id active_category %} active{% endifequal %}{% endifequal %}" href="{{ category.get_absolute_url }}">
+                    <div class="cell icon">
+                        <img src="{{ category.picture.url }}" alt="{{ category.name }}" title="{{ category.name }}" class="category_thumb">
+                    </div>
+                    <div class="cell">
+                        {{ category.name }}
+                    </div>
+                    <div class="cell chevron">
+                        <i class="icon-chevron-right"></i>
+                    </div>
+                </a>
+            {% endfor %}
+        </div>
+        <h3 class="category_head section" id="special_category" rel='2' data-href="{% url 'special_subcategory_page' 'special' %}">
+            Спецпредложения
+        </h3>
+        <div class="category">
+            <div class="fon"></div>
+        </div>
+    </div>
+</div>

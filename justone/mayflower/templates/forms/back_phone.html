@@ -1,0 +1,25 @@
+<div id="popup_form">
+    <script type="text/javascript">
+        function back_call_callback()
+        {
+            $.ajax({
+                url: '{% url 'back_call' %}',
+                data: $('form[name="back_call_form"]').serialize(),
+                type: 'post',
+                success: function(response)
+                {
+                    $('#back_call_form').html(response);
+                },
+                error: function()
+                {
+                    alert('Произошла ошибка. Попробуйте позже');
+                }
+            })
+        }
+    </script>
+    <div class="head">заказать обратный звонок</div>
+    <form name="back_call_form" id="back_call_form">
+        {% include 'forms/form_output.html' %}
+    </form>
+    <a class="close" href="javascript:void(0);"></a>
+</div>

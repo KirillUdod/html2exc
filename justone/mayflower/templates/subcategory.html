@@ -1,0 +1,288 @@
+{% extends 'base.html' %}
+{% load catalog %}
+
+{% block title %}
+    {% ifequal active_category_type 'special' %}Спецпредложения{% else %}{{ category.name }}{% endifequal %} c доставкой по Москве и Московской области. Магазин цветов MayFlo.ru
+{% endblock %}
+
+{% block keywords %}
+    {% ifequal active_category_type 'special' %}Спецпредложения{% else %}{{ category.name }}{% endifequal %}, заказ и продажа цветов, доставка цветов, доставка букетов, подарок, купить цветы
+{% endblock %}
+
+{% block description %}
+    {% ifequal active_category_type 'special' %}Спецпредложения{% else %}{{ category.name }}{% endifequal %} с доставкой по Москве, Магазин цветов Mayflo.ru, заказ и продажа цветов, купить цветы с доставкой на дом
+{% endblock %}
+
+
+{% block ext_head %}
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/catalog.css">
+
+    {% if active_category_type == 'bouquet' %}
+        <script type="text/javascript">
+            var pluralizeString = 'Р,Р,Р';
+            var productsPrices = {
+            {% for product in products %}
+                {% if product.prices_info %}
+                    {{ product.id }}: {
+                        {% if product.prices_info.keys and product.prices_info.keys.0 %}
+                            {% for height, price_height_info in product.prices_info.iteritems %}
+                                {{ height }}: {
+                            {% for count, price_info in price_height_info.iteritems %}
+                                {{ count }}: {{ price_info|safe }},
+                            {% endfor %}
+                            },
+                            {% endfor %}
+                        {% else %}
+                            {% for price_height_info in product.prices_info.itervalues %}
+                                {% for count, price_info in price_height_info.iteritems %}
+                                    {{ count }}: {{ price_info|safe }},
+                                {% endfor %}
+                            {% endfor %}
+                        {% endif %}
+                    },
+                {% endif %}
+            {% endfor %}
+            }
+        </script>
+    {% endif %}
+    <style>
+        .contact_centered{
+            margin: 0 auto;
+            float: none!important;
+            width: 90px!important;
+        }
+        .contact, .contact2 {
+            width: 84px;
+            padding: 0;
+            border: 0;
+            font-size: 100%;
+            font: inherit;
+            vertical-align: baseline;
+            float:left;
+        }
+
+        .contact-input {
+            overflow: hidden;
+            padding: 0px;
+            border: 1px solid #b4a5a5;
+            border-radius: 0px;
+            margin: 0;
+            border-radius: 4px;
+        }
+
+        .select {
+            display: block;
+            position: relative;
+            overflow: hidden;
+            background: white;
+            border-radius: 2px;
+            background-image: -webkit-linear-gradient(top, #fcfdff, #f2f7f7);
+            background-image: -moz-linear-gradient(top, #fcfdff, #f2f7f7);
+            background-image: -o-linear-gradient(top, #fcfdff, #f2f7f7);
+            background-image: linear-gradient(to bottom, #fcfdff, #f2f7f7);
+            -webkit-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
+        }
+
+        .select:before {
+            top: 7px;
+            border-bottom: 3px solid #7f9298;
+        }
+
+        .select:after {
+            top: 13px;
+            border-top: 3px solid #7f9298;
+        }
+
+        .select:before, .select:after {
+            content: '';
+            position: absolute;
+            right: 11px;
+            width: 0;
+            height: 0;
+            border-left: 3px outset transparent;
+            border-right: 3px outset transparent;
+        }
+
+        .select > select {
+            position: relative;
+            z-index: 2;
+            width: 100%;
+            height: 29px;
+            line-height: 17px;
+            padding: 5px 9px;
+            padding-right: 0;
+            border-right: 1px solid;
+            background: transparent;
+            background: rgba(0, 0, 0, 0);
+            border: 0;
+            -webkit-appearance: none;
+            font-size:13px;
+        }
+
+        fieldset {
+            padding: 0;
+            border: 0;
+            font-size: 100%;
+            font: inherit;
+            vertical-align: baseline;
+            margin:0;
+        }
+
+        #selection {
+            display: block;
+            position: relative;
+            top: -119px;
+        }
+
+        .cont_select {
+            margin: 0 auto;
+            width: 168px;
+            height: 30px;
+        }
+
+        #left_block{
+             margin-top: -20px;
+        }
+    </style>
+
+    {% if active_category_type == 'bouquet' %}
+        <script type="text/javascript">
+            var pluralizeString = 'Р,Р,Р';
+            var productsPrices = {
+            {% for product in products %}
+                {% if product.prices_info %}
+                    {{ product.id }}: {
+                        {% if product.prices_info.keys and product.prices_info.keys.0 %}
+                            {% for height, price_height_info in product.prices_info.iteritems %}
+                                {{ height }}: {
+                            {% for count, price_info in price_height_info.iteritems %}
+                                {{ count }}: {{ price_info|safe }},
+                            {% endfor %}
+                            },
+                            {% endfor %}
+                        {% else %}
+                            {% for price_height_info in product.prices_info.itervalues %}
+                                {% for count, price_info in price_height_info.iteritems %}
+                                    {{ count }}: {{ price_info|safe }},
+                                {% endfor %}
+                            {% endfor %}
+                        {% endif %}
+                    },
+                {% endif %}
+            {% endfor %}
+            }
+        </script>
+    {% endif %}
+{% endblock %}
+
+
+{% block left_block %}
+<div id="catalog_category" style="width:900px;">
+    <div class="сatalog_cont">
+        <div class="catalog_icon">✿</div>
+        <div class="title">{{ category.name }}</div>
+        <div class="mini_title">Всего:<b>{{ products_total }}</b></div>
+        <a class="all"
+           href="{% ifequal active_category_type 'special' %}{% url 'special_subcategory_page' 'special' %}{% else %}{% url 'subcategory_page' category_type=active_category_type category_id=active_category %}{% endifequal %}?show_all=1">
+            ( Показать все )
+        </a>
+    </div>
+    <div class="shadow_catalog"></div>
+</div>
+
+<div id="main_content_category">
+    <div id="goods_list_main">
+
+        <div class="goods">
+            {% for product in products %}
+                <div class="new_good">
+                    <a class="good_thumb" href="{{ product.get_absolute_url }}">
+                        <img src="{% if product.category_picture %}{{ product.category_picture.url }}{% endif %}" alt="{{ product.name }}" title="{{ product.name }}" width="165" height="195">
+                        <div class="good_checkbox"></div>
+                        <div class="good_desc">{{ product.name }}</div>
+                    </a>
+
+                    <div class="price" id="product_price_{{ product.id }}">
+                        {{ product.get_base_price }} Р
+                    </div>
+
+                    <a href="#" onclick="basket_add({{ product.id }}, '{{ active_category_type }}');return false" class="order_btn2">В корзину</a>
+
+                    {% if active_category_type == 'bouquet' and not product.one_price %}
+                        <div id="selection">
+                            <div class="cont_select">
+                                {% if product.prices_info.keys.0 %}
+                                    <div class="contact">
+                                        <div class="contact-inner">
+                                            <p class="contact-input">
+                                                <label class="select">
+                                                    <select name="product_height_{{ product.id }}"
+                                                            id="product_height_{{ product.id }}"
+                                                            onchange="productHeightChanged({{ product.id }});">
+                                                        {% for height in product.prices_info.iterkeys %}
+                                                            <option value="{{ height }}"
+                                                                {% if height == product.main_price.height %}selected=""{% endif %}>
+                                                                {{ height }} см.
+                                                            </option>
+                                                        {% endfor %}
+                                                    </select>
+                                                </label>
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div class="separate"></div>
+                                {% endif %}
+                                {% with product.prices_info|getvalue:product.main_price.height as main_price_group %}
+                                    <div class="contact2{% if product.prices_info.keys and not product.prices_info.keys.0 %} contact_centered{% endif %}">
+                                        <fieldset class="contact-inner">
+                                            <p class="contact-input">
+                                                <label class="select">
+                                                    <select name="product_count_{{ product.id }}" id="product_count_{{ product.id }}" onchange="productCountChanged({{ product.id }});">
+                                                        {% for count, price_info in main_price_group.iteritems %}
+                                                            <option value="{{ count }}"
+                                                                    {% if price_info.id == product.main_price.id %}selected=""{% endif %}>
+                                                                {{ count }} {{ product|bouquet_pluralize:count }}
+                                                            </option>
+                                                        {% endfor %}
+                                                    </select>
+                                                </label>
+                                            </p>
+                                        </fieldset>
+                                    </div>
+                                {% endwith %}
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+                <div class="sep2"></div>
+            {% endfor %}
+        </div>
+        <div class="sep3"></div>
+        <div class="good_navigation">
+            <div class="pages">Всего:<b>{{ products_total }}</b></div>
+
+            {% if not show_all %}
+                {% ifnotequal current_page pagination.prev_page %}
+                    <a class="prev_page" href="{% ifequal active_category_type 'special' %}{% url 'special_subcategory_page' category_type=active_category_type current_page=pagination.prev_page %}{% else %}{% url 'subcategory_page' category_type=active_category_type category_id=active_category current_page=pagination.prev_page %}{% endifequal %}"></a>
+                {% endifnotequal %}
+
+                {% for page_num in pagination.pages %}
+                    <a class="{% ifequal current_page page_num %}active{% else %}page{% endifequal %}"
+                            href="{% ifequal active_category_type 'special' %}{% url 'special_subcategory_page' category_type=active_category_type current_page=page_num %}{% else %}{% url 'subcategory_page' category_type=active_category_type category_id=active_category current_page=page_num %}{% endifequal %}">{{ page_num }}</a>
+                {% endfor %}
+
+                {% ifnotequal current_page pagination.next_page %}
+                    <a class="next_page" href="{% ifequal active_category_type 'special' %}{% url 'special_subcategory_page' category_type=active_category_type current_page=pagination.next_page %}{% else %}{% url 'subcategory_page' category_type=active_category_type category_id=active_category current_page=pagination.next_page %}{% endifequal %}"></a>
+                {% endifnotequal %}
+
+                <a class="all" href="{% ifequal active_category_type 'special' %}{% url 'special_subcategory_page' 'special' %}{% else %}{% url 'subcategory_page' category_type=active_category_type category_id=active_category %}{% endifequal %}?show_all=1">Показать все</a>
+            {% endif %}
+        </div>
+
+        <div class="clear"></div>
+    </div>
+
+    <div class="clear"></div>
+</div>
+{% endblock %}
